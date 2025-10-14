@@ -61,7 +61,7 @@ const MoreOptionsModal: React.FC<MoreOptionsModalProps> = ({
         handleHelp();
         break;
       case 'about':
-        Alert.alert("Sobre o App", "Código Civil Digital v1.0.0\nDesenvolvido pela Learn Code");
+        Alert.alert("Código Civil MZ", `Código Civil MZ v${require('../../app.json').expo.version}\nDesenvolvido pela Learn Code`);
         break;
       case 'share':
         handleShare();

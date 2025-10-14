@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Share, Linking, Platform, Alert } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity, StyleSheet, Share, Linking, Platform, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
@@ -7,14 +7,30 @@ import { useTheme } from '../../../ThemeContext';
 import { Appbar } from 'react-native-paper';
 import { normalize } from '../../../utils/normalize';
 
-const options = [
-  { title: 'Anotações', icon: 'file-text', screen: '/(tabs)/mais/opcoes/anotacoes' },
-  { title: 'Favoritos', icon: 'star', screen: '/(tabs)/mais/opcoes/favoritos' },
-  { title: 'Configurações', icon: 'settings', screen: '/(tabs)/mais/opcoes/configuracoes' },
-  { title: 'Ajuda', icon: 'help-circle', action: 'help' },
-  { title: 'Sobre o App', icon: 'info', action: 'about' },
-  { title: 'Compartilhar', icon: 'share-2', action: 'share' },
-  { title: 'Avaliar o App', icon: 'star', action: 'rate' },
+const sections = [
+  {
+    title: 'Sua Atividade',
+    data: [
+      { title: 'Anotações', icon: 'file-text', screen: '/(tabs)/mais/opcoes/anotacoes' },
+      { title: 'Favoritos', icon: 'star', screen: '/(tabs)/mais/opcoes/favoritos' },
+    ],
+  },
+  {
+    title: 'App',
+    data: [
+      { title: 'Configurações', icon: 'settings', screen: '/(tabs)/mais/opcoes/configuracoes' },
+      { title: 'Ajuda', icon: 'help-circle', action: 'help' },
+      { title: 'Sobre o App', icon: 'info', action: 'about' },
+      { title: 'Contacte-nos', icon: 'mail', action: 'contact' },
+    ],
+  },
+  {
+    title: 'Outros',
+    data: [
+      { title: 'Compartilhar', icon: 'share-2', action: 'share' },
+      { title: 'Avaliar o App', icon: 'star', action: 'rate' },
+    ],
+  },
 ];
 
 export default function MaisScreen() {
@@ -31,7 +47,10 @@ export default function MaisScreen() {
           WebBrowser.openBrowserAsync('https://www.google.com');
           break;
         case 'about':
-          Alert.alert("Sobre o App", "Código Civil Digital v1.0.0\nDesenvolvido pela Learn Code");
+          Alert.alert("Código Civil MZ", `Código Civil MZ v${require('../../../../app.json').expo.version}\nDesenvolvido pela Learn Code`);
+          break;
+        case 'contact':
+          Linking.openURL('mailto:codelearn048@gmail.com');
           break;
         case 'share':
           Share.share({
@@ -66,10 +85,13 @@ export default function MaisScreen() {
       <Appbar.Header style={styles.header}>
         <Appbar.Content title="Mais" titleStyle={styles.title} />
       </Appbar.Header>
-      <FlatList
-        data={options}
+      <SectionList
+        sections={sections}
         renderItem={renderItem}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item, index) => item.title + index}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.sectionHeader}>{title}</Text>
+        )}
         contentContainerStyle={styles.listContainer}
       />
     </View>
@@ -98,6 +120,14 @@ const getStyles = (colors) => StyleSheet.create({
     lineHeight: normalize(22) * 1.5,
     color: colors.text,
     textAlign: 'center'
+  },
+  sectionHeader: {
+    fontFamily: 'SF-Pro-Display-Bold',
+    fontSize: normalize(16),
+    color: colors.textSecondary,
+    paddingHorizontal: normalize(20),
+    paddingTop: normalize(20),
+    paddingBottom: normalize(10),
   },
   listContainer: {
     paddingTop: normalize(20),

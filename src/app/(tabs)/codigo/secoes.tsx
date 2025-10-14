@@ -5,6 +5,7 @@ import { Link, useLocalSearchParams, Stack } from 'expo-router';
 import { useTheme } from '../../../ThemeContext';
 import { codigoCivil } from '../../../data';
 import { MaterialIcons } from '@expo/vector-icons';
+import { normalize } from '../../../utils/normalize';
 
 export default function SecoesScreen() {
   const { colors } = useTheme();
@@ -59,7 +60,7 @@ const getStyles = (colors) => StyleSheet.create({
   },
   itemText: {
     fontFamily: 'SF-Pro-Display-Regular',
-    fontSize: 18,
+    fontSize: normalize(18),
     lineHeight: 18 * 1.5,
     color: colors.text,
   },

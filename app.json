@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Código Civil",
+    "name": "Código Civil MZ",
     "slug": "my-app",
-    "version": "1.2.1",
+    "version": "2.2.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.jpg",
     "scheme": "myapp",

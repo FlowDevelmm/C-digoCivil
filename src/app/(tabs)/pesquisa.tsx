@@ -272,7 +272,7 @@ const Pesquisa = () => {
                         setSearchQuery(item);
                         setSuggestions([]);
                     }}>
-                        <Text>{item}</Text>
+                        <Text style={{ color: colors.text }}>{item}</Text>
                     </TouchableOpacity>
                 )}
             />

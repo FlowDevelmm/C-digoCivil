@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Text, View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useLocalSearchParams, Stack } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../../../ThemeContext';
 import { codigoCivil, Artigo } from '../../../data';
 import { useFavoriteArticles } from '../../../hooks/useFavoriteArticles';
@@ -53,13 +52,13 @@ export default function ArtigosScreen() {
     params.subsecaoIndex
   );
 
-  const { favoriteArticles, addFavoriteArticle, removeFavoriteArticle, isFavoriteArticle } = useFavoriteArticles();
+  const { isFavoriteArticle, addFavoriteArticle, removeFavoriteArticle } = useFavoriteArticles();
 
   if (!items || items.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
-        <View>
-          <Stack.Screen options={{ title: 'Código', headerStyle: { backgroundColor: colors.card }, headerTintColor: colors.text, headerTitleStyle: { fontSize: normalize(18) } }} />
+        <Stack.Screen options={{ title: screenTitle, headerStyle: { backgroundColor: colors.background, elevation: 0, shadowOpacity: 0, borderBottomWidth: 0 }, headerTintColor: colors.text }} />
+        <View style={styles.centeredMessage}>
           <Text style={styles.errorText}>Nenhum artigo encontrado.</Text>
         </View>
       </SafeAreaView>
@@ -68,37 +67,39 @@ export default function ArtigosScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-               <Stack.Screen options={{ title: 'Código', headerStyle: { backgroundColor: colors.card }, headerTintColor: colors.text }} />
+      <Stack.Screen options={{ title: screenTitle, headerStyle: { backgroundColor: colors.background, elevation: 0, shadowOpacity: 0, borderBottomWidth: 0 }, headerTintColor: colors.text }} />
       <FlatList
         data={items}
-        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.listContent}
+        keyExtractor={(item) => item.nome}
         renderItem={({ item }) => (
           <Link href={{ pathname: '/article', params: { nome: item.nome, texto: item.texto, path: screenTitle } }} asChild>
-            <TouchableOpacity style={styles.itemContainer}>
-              <View style={styles.itemHeader}>
+            <TouchableOpacity style={styles.card}>
+              <View style={styles.cardContent}>
                 <Text style={styles.artigoNome}>{item.nome}</Text>
-                <TouchableOpacity
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if (isFavoriteArticle(item.nome)) {
-                      removeFavoriteArticle(item.nome);
-                    } else {
-                      addFavoriteArticle(item.nome);
-                    }
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name={isFavoriteArticle(item.nome) ? 'heart' : 'heart-outline'}
-                    size={24}
-                    color={isFavoriteArticle(item.nome) ? colors.primary : colors.text}
-                  />
-                </TouchableOpacity>
+                <Text style={styles.artigoTexto} numberOfLines={2}>{item.texto.replace(/\n/g, ' ')}</Text>
               </View>
+              <TouchableOpacity
+                style={styles.favoriteButton}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (isFavoriteArticle(item.nome)) {
+                    removeFavoriteArticle(item.nome);
+                  } else {
+                    addFavoriteArticle(item.nome);
+                  }
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={isFavoriteArticle(item.nome) ? 'heart' : 'heart-outline'}
+                  size={normalize(26)}
+                  color={isFavoriteArticle(item.nome) ? colors.primary : colors.text}
+                />
+              </TouchableOpacity>
             </TouchableOpacity>
           </Link>
         )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </SafeAreaView>
   );
@@ -109,34 +110,52 @@ const getStyles = (colors) => StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  itemContainer: {
-    padding: normalize(16),
-    backgroundColor: colors.card,
+  listContent: {
+    paddingHorizontal: normalize(16),
+    paddingVertical: normalize(10),
   },
-  itemHeader: {
+  card: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: normalize(8),
+    backgroundColor: colors.card,
+    padding: normalize(20),
+    borderRadius: normalize(12),
+    marginBottom: normalize(12),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardContent: {
+    flex: 1,
+    marginRight: normalize(16),
   },
   artigoNome: {
-    fontFamily: 'SF-Pro-Display-Bold',
+    fontFamily: 'Inter_18pt-Bold',
     fontSize: normalize(18),
-    lineHeight: normalize(18) * 1.5,
-    color: colors.text,
-    flex: 1,
+    color: colors.primary,
+    marginBottom: normalize(6),
   },
-  
-  separator: {
-    height: normalize(1),
-    backgroundColor: colors.border,
+  artigoTexto: {
+    fontFamily: 'Inter_18pt-Regular',
+    fontSize: normalize(14),
+    color: colors.text,
+    lineHeight: normalize(20),
+  },
+  favoriteButton: {
+    padding: normalize(8),
+  },
+  centeredMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   errorText: {
-    textAlign: 'center',
-    marginTop: normalize(20),
-    fontFamily: 'SF-Pro-Display-Regular',
-    fontSize: normalize(18),
-    lineHeight: normalize(18) * 1.5,
+    fontFamily: 'Inter_18pt-Regular',
+    fontSize: normalize(16),
     color: colors.text,
+    textAlign: 'center',
   },
 });

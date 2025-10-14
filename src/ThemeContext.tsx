@@ -13,13 +13,13 @@ const lightColors = {
 };
 
 const darkColors = {
-  background: '#0b1220',
-  text: '#e6eef6',
-  textSecondary: '#a9b7c9',
-  primary: '#3fa0ff',
-  card: '#121b2a',
-  border: '#4cc4ff',
-  icon: '#3fa0ff',
+  background: '#121212',
+  text: '#E0E0E0',
+  textSecondary: '#A9B7C9',
+  primary: '#64B5F6',
+  card: '#1E1E1E',
+  border: '#273443',
+  icon: '#64B5F6',
   danger: '#ff4d4d',
 };
 
