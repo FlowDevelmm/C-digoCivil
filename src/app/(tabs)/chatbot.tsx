@@ -98,12 +98,12 @@ export default function ChatbotScreen() {
                         )}
                     />
                     {loading && <ActivityIndicator size="large" color={colors?.primary} style={{ marginVertical: 10 }}/>}
-                    <View style={[styles.inputContainer, { backgroundColor: colors?.card }]}>
+                    <View style={[styles.inputContainer, { backgroundColor: colors?.card, borderColor: colors?.border, borderWidth: 1 }]}>
                         <TextInput
                             placeholder="Digite sua pergunta..."
                             value={inputText}
                             onChangeText={setInputText}
-                            style={[styles.input, { color: colors?.text }]}
+                            style={[styles.input, { color: colors?.text, minHeight: 40 }]}
                             placeholderTextColor={colors?.textSecondary}
                         />
                         <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>

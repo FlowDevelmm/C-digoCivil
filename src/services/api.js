@@ -1,33 +1,24 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = 'http://127.0.0.1:8000/chat'; // Adjust if your backend is on a different port or domain
 
-export async function syncArtigos(ultimaAtualizacao) {
-    const response = await fetch(`${API_URL}/artigos/sync?ultima_atualizacao=${ultimaAtualizacao}`);
-    return await response.json();
-}
-
-export async function perguntarChatbot(pergunta) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 seconds timeout
-
+export const perguntarChatbot = async (query) => {
     try {
-        const response = await fetch(`${API_URL}/chat/`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ pergunta }),
-            signal: controller.signal
+        const response = await fetch(`${API_BASE_URL}/chat`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
         });
 
-        clearTimeout(timeoutId);
-
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Erro ao enviar mensagem para o chatbot.');
         }
 
-        return await response.json();
+        const data = await response.json();
+        return data.answer;
     } catch (error) {
-        if (error.name === 'AbortError') {
-            throw new Error('A requisição demorou muito e foi cancelada. O servidor está disponível?');
-        }
+        console.error('Erro na comunicação com o chatbot:', error);
         throw error;
     }
-}
+};
