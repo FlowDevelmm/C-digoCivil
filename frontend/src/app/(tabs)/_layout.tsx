@@ -40,18 +40,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="chatbot"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Feather
-              name="message-circle"
-              size={28}
-              color={focused ? colors.primary : colors.textSecondary}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="codigo"
         options={{
           tabBarIcon: ({ focused }) => (

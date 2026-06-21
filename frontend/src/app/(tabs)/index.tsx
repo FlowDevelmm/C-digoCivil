@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../../ThemeContext';
 import { useFavoriteArticles } from '../../hooks/useFavoriteArticles';
+import ChatbotWidget from '../../components/ChatbotWidget';
 
 // Lista de livros para pesquisa
 const livros = [
@@ -252,6 +253,8 @@ export default function HomeScreen() {
           )}
         </View>
       </ScrollView>
+
+      <ChatbotWidget />
     </View>
   );
 }

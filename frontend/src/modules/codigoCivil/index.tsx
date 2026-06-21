@@ -7,6 +7,7 @@ import { useTheme } from '../../../ThemeContext';
 import { codigoCivil } from '../../../data';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { normalize } from '../../../utils/normalize';
+import ChatbotWidget from '../../components/ChatbotWidget';
 
 export default function LivrosScreen() {
   const { colors } = useTheme();
@@ -27,6 +28,8 @@ export default function LivrosScreen() {
           </Link>
         ))}
       </ScrollView>
+
+      <ChatbotWidget />
     </SafeAreaView>
   );
 }

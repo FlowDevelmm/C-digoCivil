@@ -1,103 +1,138 @@
-# Code25K - Assistente do Código Civil Moçambicano 🇲🇿
+# Código Civil Mz — Assistente do Código Civil Moçambicano 🇲🇿
 
-Bem-vindo ao **Código Civil Mz**, seu assistente jurídico interativo e moderno para o Código Civil de Moçambique. Este aplicativo foi desenvolvido para facilitar o acesso à informação jurídica, oferecendo recursos avançados como um Chatbot com IA, visualização de artigos, factos curiosos e muito mais.
+Aplicação para consultar e compreender o **Código Civil de Moçambique** de forma
+simples, com um **assistente jurídico (chatbot)** alimentado por IA. O projecto
+tem duas partes:
 
-## 📱 Funcionalidades Principais
+- **`backend/`** — API em **FastAPI** que serve o chatbot (respostas geradas pelo
+  Google Gemini com base nos artigos do Código Civil).
+- **`frontend/`** — aplicação móvel em **React Native / Expo** (o cliente que o
+  utilizador usa).
 
-### 1. 🏠 Início Interativo
-- **Artigo do Dia:** Aprenda algo novo todos os dias com um artigo do Código Civil em destaque.
-- **Factos sobre a Lei:** Curiosidades jurídicas relevantes para o contexto moçambicano (ex: Maioridade, Casamento).
-- **Pesquisa Rápida:** Encontre livros e tópicos do Código Civil rapidamente.
+> A pasta `api.codigo-civil/` contém a API original em Flask, que serviu de base e
+> foi reimplementada em FastAPI dentro de `backend/`.
 
-### 2. 🤖 Chatbot "Assistente Civil"
-Um assistente virtual inteligente pronto para responder suas dúvidas sobre legislação.
-- **Gatekeeper de Segurança:** Sistema de acesso exclusivo via código de 8 dígitos.
-- **Instruções Integradas:** Guia passo a passo narrativo e gentil na tela de bloqueio explicando como obter o acesso (Transferência de 500 MT -> Confirmação via WhatsApp).
-- **Persistência Inteligente:** O acesso liberado dura por **30 dias**, renovando-se automaticamente sem necessidade de redigitar o código durante esse período.
-- **Interface Conversacional:** Design moderno tipo chat (WhatsApp/Telegram) com suporte a histórico de mensagens.
+## 📱 Funcionalidades
 
-### 3. 📖 Navegação no Código
-- Estrutura organizada por Livros, Títulos e Capítulos.
-- Leitura agradável com tipografia ajustada e responsiva.
+### 🤖 Assistente Jurídico (Chatbot)
+- **Linguagem simples e humana:** traduz a linguagem jurídica para o dia a dia.
+- **Conversa contínua:** mantém o contexto das mensagens anteriores.
+- **Respostas em Markdown** (sem asteriscos), curtas e directas por defeito —
+  detalha apenas quando o utilizador pede.
+- **Citações de artigos clicáveis:** ao tocar num "Artigo 1577" mencionado na
+  resposta, abre um modal com a **hierarquia** (Livro › Título › Capítulo ›
+  Secção › Subsecção) e o **texto completo** do artigo.
 
-### 4. ⭐ Favoritos e Personalização
-- Marque artigos importantes para acesso rápido.
-- Suporte a Temas (Claro/Escuro).
+### 📖 Navegação no Código
+- Estrutura organizada por Livros, Títulos, Capítulos, Secções e Subsecções.
+- Pesquisa de artigos e tópicos.
 
-## 🛠️ Tecnologias Utilizadas
+### ⭐ Personalização
+- Favoritos, anotações e tema Claro/Escuro.
 
-Este projeto foi construído com as tecnologias mais modernas do ecossistema React Native:
+## 🛠️ Tecnologias
 
-- **Framework:** [React Native](https://reactnative.dev/) (v0.81) via [Expo](https://expo.dev/) (SDK 54).
-- **Linguagem:** [TypeScript](https://www.typescriptlang.org/) para maior segurança e escalabilidade.
-- **Navegação:** [Expo Router](https://docs.expo.dev/router/introduction/) (v6).
-- **UI/UX:**
-  - `react-native-paper` para componentes Material Design.
-  - `react-native-reanimated` para animações fluidas.
-  - Estilização responsiva com utilitário `normalize` personalizado.
-- **Armazenamento Local:** `@react-native-async-storage/async-storage` para persistir o histórico do chat e o código de acesso.
+**Backend**
+- [FastAPI](https://fastapi.tiangolo.com/) + [Uvicorn](https://www.uvicorn.org/)
+- [Google Gemini](https://ai.google.dev/) (`gemini-2.5-flash`) via `google-generativeai`
+- Os artigos são carregados para **memória** a partir de um dump SQL
+  (`backend/data/chatbot.sql`) — **sem base de dados**.
 
-## 🚀 Como Rodar o Projeto
+**Frontend**
+- [React Native](https://reactnative.dev/) (0.81) via [Expo](https://expo.dev/) (SDK 54)
+- [TypeScript](https://www.typescriptlang.org/) e [Expo Router](https://docs.expo.dev/router/introduction/) (v6)
+- `react-native-paper`, `react-native-reanimated`, utilitário `normalize` responsivo
+- `@react-native-async-storage/async-storage` para persistência local
 
-Siga os passos abaixo para executar o aplicativo em seu ambiente de desenvolvimento:
+## 🚀 Como executar
 
-### Pré-requisitos
-- Node.js instalado.
-- Gerenciador de pacotes `npm` ou `yarn`.
-- Dispositivo físico ou emulador (Android/iOS) configurado.
+### 1. Backend (FastAPI)
 
-### Instalação
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env          # preencher GEMINI_API_KEY
+```
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone <url-do-repositorio>
-    cd Code25K
-    ```
+Arrancar o servidor (acessível na rede local, para o telemóvel poder ligar):
 
-2.  **Instale as dependências:**
-    ```bash
-    npm install
-    # ou
-    yarn install
-    ```
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 5500
+```
 
-3.  **Inicie o servidor de desenvolvimento:**
-    ```bash
-    npx expo start
-    ```
+- API: `http://localhost:5500/` · Documentação (Swagger): `http://localhost:5500/docs`
+- Endpoint principal: `POST /api/chatbot` com `{ "query": "...", "history": [...] }`
 
-4.  **Abra no dispositivo:**
-    -   Escaneie o QR Code com o aplicativo **Expo Go** (Android/iOS).
-    -   Ou pressione `a` para abrir no emulador Android, `i` para o simulador iOS.
+> Se o telemóvel não ligar, liberte a porta na firewall:
+> `sudo firewall-cmd --add-port=5500/tcp`
 
-## 📂 Estrutura do Projeto
+### 2. Frontend (Expo)
+
+```bash
+cd frontend
+npm install
+npx expo start
+```
+
+Aponte o **endereço do backend** em [`frontend/src/config.ts`](frontend/src/config.ts)
+(use o IP da máquina onde o backend corre, na mesma rede Wi-Fi do telemóvel).
+Pode também sobrepor sem alterar o código:
+
+```bash
+EXPO_PUBLIC_API_BASE_URL=http://SEU_IP:5500 npx expo start
+```
+
+Depois, leia o QR Code com o **Expo Go** (Android/iOS) ou use um emulador.
+
+## 📂 Estrutura do projecto
 
 ```
 /
-├── app.json             # Configuração do Expo
-├── package.json         # Dependências e scripts
-├── src/
-│   ├── app/             # Rotas e Telas (Expo Router)
-│   │   ├── (tabs)/      # Navegação por Abas (Home, Chatbot, Pesquisa, etc.)
-│   │   │   ├── chatbot.tsx # Tela do Assistente com Gatekeeper
-│   │   │   ├── index.tsx   # Tela Inicial (Dashboard)
-│   │   │   └── ...
-│   │   └── ...
-│   ├── components/      # Componentes reutilizáveis
-│   ├── service/         # Integração com APIs externas
-│   ├── utils/           # Utilitários (ex: normalize.ts)
-│   ├── hooks/           # Hooks personalizados
-│   └── ...
-└── assets/              # Imagens, fontes e ícones
+├── backend/                 # API FastAPI do chatbot
+│   ├── main.py              # App FastAPI
+│   ├── config.py            # Configurações (Gemini, caminho do dump)
+│   ├── schemas.py           # Modelos Pydantic (pedido/resposta)
+│   ├── data/                # Dump SQL + parser + repositório em memória
+│   ├── Models/              # Artigo (dataclass)
+│   ├── Services/            # ChatbotService (pesquisa + Gemini)
+│   └── Controllers/         # Router do chatbot
+│
+├── frontend/                # App React Native / Expo
+│   ├── app.json
+│   └── src/
+│       ├── app/(tabs)/      # Rotas por abas (Início, Código, Pesquisa, Mais)
+│       ├── components/
+│       │   └── ChatbotWidget.tsx   # Assistente (chat + artigos clicáveis)
+│       ├── services/api.js  # Chamada ao backend (/api/chatbot)
+│       ├── config.ts        # URL base do backend
+│       ├── utils/
+│       │   └── artigoLookup.ts     # Localiza artigos + hierarquia
+│       └── data.ts          # Código Civil (conteúdo completo)
+│
+└── api.codigo-civil/        # API original em Flask (referência)
 ```
 
-## 🔒 Detalhes do Acesso (Chatbot)
+## 🔌 API do chatbot
 
-O acesso ao Chatbot é restrito e gerenciado por um sistema de tokens:
-1.  O usuário vê uma tela de bloqueio com instruções.
-2.  Após realizar o pagamento (500 MT) e confirmar via WhatsApp (`828376317`), recebe um código.
-3.  Ao inserir o código válido, o acesso é liberado e o token é salvo localmente.
-4.  O sistema verifica a validade do token a cada abertura (expira em 30 dias).
+`POST /api/chatbot`
+
+```json
+{
+  "query": "O que diz o Artigo 1577?",
+  "history": [
+    { "role": "user", "content": "Olá" },
+    { "role": "assistant", "content": "Olá! Como posso ajudar?" }
+  ]
+}
+```
+
+Resposta:
+
+```json
+{ "response": "..." }
+```
 
 ---
 Desenvolvido com ❤️ para a comunidade jurídica de Moçambique.

@@ -9,6 +9,7 @@ import { categories } from '../../categories';
 import { synonyms } from '../../synonyms';
 import { normalize } from '../../utils/normalize';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import ChatbotWidget from '../../components/ChatbotWidget';
 
 const Pesquisa = () => {
   const { colors } = useTheme();
@@ -296,6 +297,8 @@ const Pesquisa = () => {
         keyExtractor={(item, index) => `${item.type}-${item.nome || item.termo}-${index}`}
         renderItem={renderItem}
       />
+
+      <ChatbotWidget />
     </View>
   );
 }
